@@ -9,7 +9,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "WowGame範本",
-        state = WindowState(size = DpSize(900.dp, 750.dp))
+        state = WindowState(size = DpSize(1300.dp, 750.dp))
     ) {
         MainScreen()
     }

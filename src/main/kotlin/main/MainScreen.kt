@@ -1,10 +1,13 @@
 package main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -18,7 +21,7 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
     var newTagState by remember { mutableStateOf("") }
 
     MaterialTheme {
-        Column {
+        Column(modifier = Modifier.fillMaxSize()) {
             InputTextView(
                 title = "標題",
                 value = titleState,
@@ -27,25 +30,49 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
                 modifier = Modifier.padding(16.dp).fillMaxWidth()
             )
 
-            InputTextView(
-                title = "測試環境",
-                value = environmentState,
-                hint = "請輸入測試環境",
-                onValueChange = { viewModel.updateEnvironment(it) },
-                modifier = Modifier.padding(16.dp).fillMaxWidth()
-            )
+            Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                Column {
+                    InputTextView(
+                        title = "測試環境",
+                        value = environmentState,
+                        hint = "請輸入測試環境",
+                        onValueChange = { viewModel.updateEnvironment(it) },
+                        modifier = Modifier.padding(16.dp).size(300.dp, 50.dp)
+                    )
 
-            TagView(
-                tags = tagsState,
-                onNewTagValueText = newTagState,
-                onNewTagValueChange = { newTagState = it },
-                onNewTagClick = {
-                    viewModel.addTag(newTagState)
-                    newTagState = ""
-                },
-                onCheckedChange = { viewModel.onCheckedChange(it) },
-                modifier = Modifier.padding(16.dp)
-            )
+                    TagView(
+                        tags = tagsState,
+                        onNewTagValueText = newTagState,
+                        onNewTagValueChange = { newTagState = it },
+                        onNewTagClick = {
+                            viewModel.addTag(newTagState)
+                            newTagState = ""
+                        },
+                        onCheckedChange = { viewModel.onCheckedChange(it) },
+                        modifier = Modifier.padding(16.dp).size(300.dp, 50.dp)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier.padding(start = 8.dp, top = 16.dp, end = 16.dp).weight(1f)
+                ) {
+                    Text(
+                        text = "預覽",
+                        modifier = Modifier
+                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                            .background(color = Color.LightGray, shape = MaterialTheme.shapes.medium)
+                    ) {
+                        Text(
+                            text = viewModel.composeResultFlow.collectAsState("").value,
+                            modifier = Modifier.fillMaxSize()
+                                .padding(8.dp)
+                        )
+                    }
+
+                }
+            }
 
             Button(
                 onClick = { viewModel.onSentClick() },
@@ -53,7 +80,6 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
             ) {
                 Text("送出")
             }
-
         }
     }
 }
@@ -78,25 +104,29 @@ fun TagView(
     onCheckedChange: (TagItem) -> Unit, modifier: Modifier = Modifier
 ) {
     Column {
-        Row {
+        Row(
+            modifier = modifier.size(300.dp)
+        ) {
             InputTextView(
                 title = "新增標籤",
                 value = onNewTagValueText,
                 hint = "請輸入標籤",
                 onValueChange = onNewTagValueChange,
-                modifier = modifier.weight(1f)
+                modifier = Modifier.size(200.dp)
             )
             Button(
                 onClick = { onNewTagClick.invoke() },
-                modifier = modifier.padding(16.dp)
+                modifier = Modifier.padding(start = 4.dp).size(50.dp)
             ) {
                 Text("新增")
             }
         }
         tags.forEach { tag ->
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Checkbox(checked = tag.isSelected, onCheckedChange = { onCheckedChange(tag) })
-                Text(text = tag.name, modifier = modifier)
+                Text(text = tag.name, modifier = Modifier)
             }
         }
     }
