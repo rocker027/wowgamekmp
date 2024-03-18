@@ -17,43 +17,44 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
     val tagsState by viewModel.tagsState.collectAsState()
     var newTagState by remember { mutableStateOf("") }
 
+    MaterialTheme {
+        Column {
+            InputTextView(
+                title = "標題",
+                value = titleState,
+                hint = "請輸入標題",
+                onValueChange = { viewModel.updateTitle(it) },
+                modifier = Modifier.padding(16.dp).fillMaxWidth()
+            )
 
-    Column {
-        InputTextView(
-            title = "標題",
-            value = titleState,
-            hint = "請輸入標題",
-            onValueChange = { viewModel.updateTitle(it) },
-            modifier = Modifier.padding(16.dp).fillMaxWidth()
-        )
+            InputTextView(
+                title = "測試環境",
+                value = environmentState,
+                hint = "請輸入測試環境",
+                onValueChange = { viewModel.updateEnvironment(it) },
+                modifier = Modifier.padding(16.dp).fillMaxWidth()
+            )
 
-        InputTextView(
-            title = "測試環境",
-            value = environmentState,
-            hint = "請輸入測試環境",
-            onValueChange = { viewModel.updateEnvironment(it) },
-            modifier = Modifier.padding(16.dp).fillMaxWidth()
-        )
+            TagView(
+                tags = tagsState,
+                onNewTagValueText = newTagState,
+                onNewTagValueChange = { newTagState = it },
+                onNewTagClick = {
+                    viewModel.addTag(newTagState)
+                    newTagState = ""
+                },
+                onCheckedChange = { viewModel.onCheckedChange(it) },
+                modifier = Modifier.padding(16.dp)
+            )
 
-        TagView(
-            tags = tagsState,
-            onNewTagValueText = newTagState,
-            onNewTagValueChange = { newTagState = it },
-            onNewTagClick = {
-                viewModel.addTag(newTagState)
-                newTagState = ""
-            },
-            onCheckedChange = { viewModel.onCheckedChange(it) },
-            modifier = Modifier.padding(16.dp)
-        )
+            Button(
+                onClick = { viewModel.onSentClick() },
+                modifier = Modifier.padding(16.dp).fillMaxWidth()
+            ) {
+                Text("送出")
+            }
 
-        Button(
-            onClick = { viewModel.onSentClick() },
-            modifier = Modifier.padding(16.dp).fillMaxWidth()
-        ) {
-            Text("送出")
         }
-
     }
 }
 
