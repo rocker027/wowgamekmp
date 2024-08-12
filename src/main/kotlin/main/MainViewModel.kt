@@ -1,7 +1,8 @@
 package main
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -16,15 +17,23 @@ class MainViewModel {
             TagItem("Web", false),
             TagItem("Backend", false),
             TagItem("Frontend", false),
+            TagItem("iOS", false),
+            TagItem("Web", false),
+            TagItem("Backend", false),
+            TagItem("Frontend", false),
+            TagItem("iOS", false),
+            TagItem("Web", false),
+            TagItem("Backend", false),
+            TagItem("Frontend", false),
         )
     )
 
     val environmentItems = listOf(
-        EnvironmentItem("Beta環境", false),
-        EnvironmentItem("Demo環境", false),
-        EnvironmentItem("Alpho環境", false),
-        EnvironmentItem("測試環境4", false),
-        EnvironmentItem("測試環境5", false),
+        EnvironmentItem(1, "Beta環境", false),
+        EnvironmentItem(2, "Demo環境", false),
+        EnvironmentItem(3, "Alpho環境", false),
+        EnvironmentItem(4, "測試環境4", false),
+        EnvironmentItem(5, "測試環境5", false),
     )
 
 
@@ -71,10 +80,6 @@ class MainViewModel {
         tagsState.value = tags
     }
 
-    fun onSentClick() {
-        println("${getSelectTagsText()}${titleState.value}")
-    }
-
     private fun getSelectTagsText(): String = buildString {
         tagsState.value.filter { it.isSelected }.forEach {
             append("[")
@@ -83,9 +88,20 @@ class MainViewModel {
         }
     }
 
+    fun clickEnvironment(environmentState: String) {
+        TODO("Not yet implemented")
+    }
+
+    fun copyText() {
+        val clipboardManager = LocalClipboardManager.current
+        val textToCopy = composeResultFlow.collectAsState("").value
+        clipboardManager.setText(AnnotatedString(textToCopy))
+    }
+
 }
 
 data class EnvironmentItem(
+    val id: Int,
     val name: String,
     val isSelected: Boolean,
     val listSteps: List<String> = listOf(
